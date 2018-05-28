@@ -21,7 +21,6 @@ public class Interfaz extends javax.swing.JFrame {
     public Interfaz() {
         initComponents();
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -68,7 +67,7 @@ public class Interfaz extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        jLabel2.setText("n:");
+        jLabel2.setText("Zn:");
 
         jLabel3.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel3.setText("a:");
@@ -120,7 +119,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(lblB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnLimpiarInput)
-                .addGap(22, 22, 22))
+                .addContainerGap())
         );
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
@@ -276,7 +275,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(btnAPotenciaB)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnBPotenciaA)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -363,6 +362,25 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     private void btnDivisionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDivisionActionPerformed
+        BigInteger numzn, num1, num2, mcd, dividemod;
+        try {
+            numzn = new BigInteger(lblN.getText());
+            num1 = new BigInteger(lblA.getText());
+            num2 = new BigInteger(lblB.getText());
+            mcd = numzn.gcd(num2);
+            if (mcd.intValue() == 1) {
+                dividemod = (num1.modInverse(num2)).mod(numzn);
+                resultado.setText(String.valueOf(dividemod));
+            } else {
+                resultado.setText(String.valueOf(num1 + " y " + num2 + " no son primos relavitos. \nPor favor vuelve a intentarlo con valores diferentes."));
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Opción Invalida");
+        }
+    }//GEN-LAST:event_btnDivisionActionPerformed
+
+    private void btnRaizAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRaizAActionPerformed
         BigInteger numzn, num1, raiz;
         String raices = "";
         ArrayList<BigInteger> resul = new ArrayList<>();
@@ -376,7 +394,7 @@ public class Interfaz extends javax.swing.JFrame {
                 }
             }
             if (resul.isEmpty()) {
-                resultado.setText("No existe raiz para a");
+                resultado.setText(lblA.getText() + " no tiene raiz cuadrada.");
             } else {
                 for (int j = 0; j < resul.size(); j++) {
                     if (j == 0) {
@@ -391,12 +409,8 @@ public class Interfaz extends javax.swing.JFrame {
         } catch (ArithmeticException e) {
             resultado.setText("error");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+            JOptionPane.showMessageDialog(null, "Opción no valida");
         }
-    }//GEN-LAST:event_btnDivisionActionPerformed
-
-    private void btnRaizAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRaizAActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_btnRaizAActionPerformed
 
     private void bntRaizBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntRaizBActionPerformed
@@ -413,7 +427,7 @@ public class Interfaz extends javax.swing.JFrame {
                 }
             }
             if (resul.isEmpty()) {
-                resultado.setText("No existe raiz para a");
+                resultado.setText(lblB.getText() + " no tiene raiz cuadrada.");
             } else {
                 for (int j = 0; j < resul.size(); j++) {
                     if (j == 0) {
@@ -442,7 +456,7 @@ public class Interfaz extends javax.swing.JFrame {
             inverso = num1.modInverse(numzn);
             resultado.setText(String.valueOf(inverso));
         } catch (ArithmeticException e) {
-            resultado.setText("No existe un inverso para A");
+            resultado.setText("No existe un inverso para A.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Opción Invalida");
         }
@@ -458,7 +472,7 @@ public class Interfaz extends javax.swing.JFrame {
             inverso = num1.modInverse(numzn);
             resultado.setText(String.valueOf(inverso));
         } catch (ArithmeticException e) {
-            resultado.setText("No existe un inverso para B");
+            resultado.setText("No existe un inverso para B.");
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Opción Invalida");
         }
@@ -499,7 +513,8 @@ public class Interfaz extends javax.swing.JFrame {
                         cuadrados = cuadrados + "," + String.valueOf(resul.get(j));
                     }
                 }
-                resultado.setText("Las raices de Z(" + numzn + ") son:{" + cuadrados + "}");
+                resultado.setText("La lista de cuadrador perfectos para Zn(" + numzn + ") son: \n "
+                        + "{" + cuadrados + "}");
             }
 
         } catch (ArithmeticException e) {
