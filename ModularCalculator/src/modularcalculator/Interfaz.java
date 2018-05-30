@@ -7,6 +7,8 @@ package modularcalculator;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
@@ -309,49 +311,102 @@ public class Interfaz extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lblNActionPerformed
 
+    private boolean validateSpecialCaracterInput(String input) {
+        boolean response = true;
+        String REG_EXP = "\\¿+|\\?+|\\°+|\\¬+|\\|+|\\!+|\\#+|\\$+|"
+                + "\\%+|\\&+|\\+|\\=+|\\’+|\\¡+|\\++|\\*+|\\~+|\\[+|\\]"
+                + "+|\\{+|\\}+|\\^+|\\<+|\\>+|\\\"+ ";
+        Pattern pattern = Pattern.compile(REG_EXP);
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            response = false;
+        }
+        return response;
+    }
+
+    private String validateInput(String num1, String num2, String numzn) {
+        String response = "";
+        if (validateSpecialCaracterInput(numzn) && validateSpecialCaracterInput(num1)
+                && validateSpecialCaracterInput(num2)) {
+            if (validateNegativeNumberInput(numzn)) {
+                response = "OK";
+            } else {
+                response = "Zn es un numero menor a cero.";
+            }
+        } else {
+            response = "A, B o Zn tienen caracteres especiales.";
+        }
+        return response;
+    }
+
+    private boolean validateNegativeNumberInput(String input) {
+        boolean response = true;
+        if (Integer.parseInt(input) < 0) {
+            response = false;
+        }
+        return response;
+    }
+
     private void btnSumaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSumaActionPerformed
         BigInteger numzn, num1, num2, sumamod;
-
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblA.getText());
-            num2 = new BigInteger(lblB.getText());
-            sumamod = (num1.add(num2)).mod(numzn);
-
-            resultado.setText(String.valueOf(sumamod));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblA.getText());
+                num2 = new BigInteger(lblB.getText());
+                sumamod = (num1.add(num2)).mod(numzn);
+                resultado.setText(String.valueOf(sumamod));
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
+
+
     }//GEN-LAST:event_btnSumaActionPerformed
 
     private void btnAPotenciaBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAPotenciaBActionPerformed
         BigInteger numzn, num1, num2, potenciamod;
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblA.getText());
+                num2 = new BigInteger(lblB.getText());
 
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblA.getText());
-            num2 = new BigInteger(lblB.getText());
+                potenciamod = num1.modPow(num2, numzn);
+                resultado.setText(String.valueOf(potenciamod));
 
-            potenciamod = num1.modPow(num2, numzn);
-            resultado.setText(String.valueOf(potenciamod));
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_btnAPotenciaBActionPerformed
 
     private void btnMultiplicacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMultiplicacionActionPerformed
         BigInteger numzn, num1, num2, multipmod;
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblA.getText());
+                num2 = new BigInteger(lblB.getText());
+                multipmod = (num1.multiply(num2)).mod(numzn);
 
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblA.getText());
-            num2 = new BigInteger(lblB.getText());
-            multipmod = (num1.multiply(num2)).mod(numzn);
-
-            resultado.setText(String.valueOf(multipmod));
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+                resultado.setText(String.valueOf(multipmod));
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_btnMultiplicacionActionPerformed
 
@@ -363,20 +418,26 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void btnDivisionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDivisionActionPerformed
         BigInteger numzn, num1, num2, mcd, dividemod;
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblA.getText());
-            num2 = new BigInteger(lblB.getText());
-            mcd = numzn.gcd(num2);
-            if (mcd.intValue() == 1) {
-                dividemod = (num1.modInverse(num2)).mod(numzn);
-                resultado.setText(String.valueOf(dividemod));
-            } else {
-                resultado.setText(String.valueOf(num1 + " y " + num2 + " no son primos relavitos. \nPor favor vuelve a intentarlo con valores diferentes."));
-            }
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblA.getText());
+                num2 = new BigInteger(lblB.getText());
+                mcd = numzn.gcd(num2);
+                if (mcd.intValue() == 1) {
+                    dividemod = (num1.modInverse(num2)).mod(numzn);
+                    resultado.setText(String.valueOf(dividemod));
+                } else {
+                    resultado.setText(String.valueOf(num1 + " y " + num2 + " no son primos relavitos. \nPor favor vuelve a intentarlo con valores diferentes."));
+                }
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_btnDivisionActionPerformed
 
@@ -384,32 +445,38 @@ public class Interfaz extends javax.swing.JFrame {
         BigInteger numzn, num1, raiz;
         String raices = "";
         ArrayList<BigInteger> resul = new ArrayList<>();
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblA.getText());
-            for (int i = 0; i < numzn.intValue(); i++) {
-                raiz = calcularCuadrado(i, numzn);
-                if (num1.compareTo(raiz) == 0) {
-                    resul.add(BigInteger.valueOf(i));
-                }
-            }
-            if (resul.isEmpty()) {
-                resultado.setText(lblA.getText() + " no tiene raiz cuadrada.");
-            } else {
-                for (int j = 0; j < resul.size(); j++) {
-                    if (j == 0) {
-                        raices = raices + String.valueOf(resul.get(j));
-                    } else {
-                        raices = raices + "," + String.valueOf(resul.get(j));
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblA.getText());
+                for (int i = 0; i < numzn.intValue(); i++) {
+                    raiz = calcularCuadrado(i, numzn);
+                    if (num1.compareTo(raiz) == 0) {
+                        resul.add(BigInteger.valueOf(i));
                     }
                 }
-                resultado.setText("Las raices de " + num1 + " son:{" + raices + "}");
-            }
+                if (resul.isEmpty()) {
+                    resultado.setText(lblA.getText() + " no tiene raiz cuadrada.");
+                } else {
+                    for (int j = 0; j < resul.size(); j++) {
+                        if (j == 0) {
+                            raices = raices + String.valueOf(resul.get(j));
+                        } else {
+                            raices = raices + "," + String.valueOf(resul.get(j));
+                        }
+                    }
+                    resultado.setText("Las raices de " + num1 + " son:{" + raices + "}");
+                }
 
-        } catch (ArithmeticException e) {
-            resultado.setText("error");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción no valida");
+            } catch (ArithmeticException e) {
+                resultado.setText("error");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_btnRaizAActionPerformed
 
@@ -417,80 +484,101 @@ public class Interfaz extends javax.swing.JFrame {
         BigInteger numzn, num1, raiz;
         String raices = "";
         ArrayList<BigInteger> resul = new ArrayList<>();
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblB.getText());
-            for (int i = 0; i < numzn.intValue(); i++) {
-                raiz = calcularCuadrado(i, numzn);
-                if (num1.compareTo(raiz) == 0) {
-                    resul.add(BigInteger.valueOf(i));
-                }
-            }
-            if (resul.isEmpty()) {
-                resultado.setText(lblB.getText() + " no tiene raiz cuadrada.");
-            } else {
-                for (int j = 0; j < resul.size(); j++) {
-                    if (j == 0) {
-                        raices = raices + String.valueOf(resul.get(j));
-                    } else {
-                        raices = raices + "," + String.valueOf(resul.get(j));
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblB.getText());
+                for (int i = 0; i < numzn.intValue(); i++) {
+                    raiz = calcularCuadrado(i, numzn);
+                    if (num1.compareTo(raiz) == 0) {
+                        resul.add(BigInteger.valueOf(i));
                     }
                 }
-                resultado.setText("Las raices de " + num1 + " son:{" + raices + "}");
-            }
+                if (resul.isEmpty()) {
+                    resultado.setText(lblB.getText() + " no tiene raiz cuadrada.");
+                } else {
+                    for (int j = 0; j < resul.size(); j++) {
+                        if (j == 0) {
+                            raices = raices + String.valueOf(resul.get(j));
+                        } else {
+                            raices = raices + "," + String.valueOf(resul.get(j));
+                        }
+                    }
+                    resultado.setText("Las raices de " + num1 + " son:{" + raices + "}");
+                }
 
-        } catch (ArithmeticException e) {
-            resultado.setText("error");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+            } catch (ArithmeticException e) {
+                resultado.setText("error");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_bntRaizBActionPerformed
 
     private void bntInversoAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntInversoAActionPerformed
         BigInteger numzn, num1, inverso;
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblA.getText());
 
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblA.getText());
-
-            inverso = num1.modInverse(numzn);
-            resultado.setText(String.valueOf(inverso));
-        } catch (ArithmeticException e) {
-            resultado.setText("No existe un inverso para A.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+                inverso = num1.modInverse(numzn);
+                resultado.setText(String.valueOf(inverso));
+            } catch (ArithmeticException e) {
+                resultado.setText("No existe un inverso para A.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_bntInversoAActionPerformed
 
     private void btnInversoBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInversoBActionPerformed
         BigInteger numzn, num1, inverso;
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblB.getText());
 
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblB.getText());
-
-            inverso = num1.modInverse(numzn);
-            resultado.setText(String.valueOf(inverso));
-        } catch (ArithmeticException e) {
-            resultado.setText("No existe un inverso para B.");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+                inverso = num1.modInverse(numzn);
+                resultado.setText(String.valueOf(inverso));
+            } catch (ArithmeticException e) {
+                resultado.setText("No existe un inverso para B.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_btnInversoBActionPerformed
 
     private void btnBPotenciaAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBPotenciaAActionPerformed
         BigInteger numzn, num1, num2, potenciamod;
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                num1 = new BigInteger(lblA.getText());
+                num2 = new BigInteger(lblB.getText());
 
-        try {
-            numzn = new BigInteger(lblN.getText());
-            num1 = new BigInteger(lblA.getText());
-            num2 = new BigInteger(lblB.getText());
+                potenciamod = num2.modPow(num1, numzn);
+                resultado.setText(String.valueOf(potenciamod));
 
-            potenciamod = num2.modPow(num1, numzn);
-            resultado.setText(String.valueOf(potenciamod));
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_btnBPotenciaAActionPerformed
 
@@ -498,29 +586,35 @@ public class Interfaz extends javax.swing.JFrame {
         BigInteger numzn, num1, raiz;
         String cuadrados = "";
         ArrayList<BigInteger> resul = new ArrayList<>();
-        try {
-            numzn = new BigInteger(lblN.getText());
-            for (int i = 0; i < numzn.intValue(); i++) {
-                resul.add(calcularCuadrado(i, numzn));
-            }
-            if (resul.isEmpty()) {
-                resultado.setText("No existe cuadrados para Zn");
-            } else {
-                for (int j = 0; j < resul.size(); j++) {
-                    if (j == 0) {
-                        cuadrados = cuadrados + String.valueOf(resul.get(j));
-                    } else {
-                        cuadrados = cuadrados + "," + String.valueOf(resul.get(j));
-                    }
+        String response = validateInput(lblA.getText(), lblB.getText(), lblN.getText());
+        if (response.equals("OK")) {
+            try {
+                numzn = new BigInteger(lblN.getText());
+                for (int i = 0; i < numzn.intValue(); i++) {
+                    resul.add(calcularCuadrado(i, numzn));
                 }
-                resultado.setText("La lista de cuadrador perfectos para Zn(" + numzn + ") son: \n "
-                        + "{" + cuadrados + "}");
-            }
+                if (resul.isEmpty()) {
+                    resultado.setText("No existe cuadrados para Zn");
+                } else {
+                    for (int j = 0; j < resul.size(); j++) {
+                        if (j == 0) {
+                            cuadrados = cuadrados + String.valueOf(resul.get(j));
+                        } else {
+                            cuadrados = cuadrados + "," + String.valueOf(resul.get(j));
+                        }
+                    }
+                    resultado.setText("La lista de cuadrador perfectos para Zn(" + numzn + ") son: \n "
+                            + "{" + cuadrados + "}");
+                }
 
-        } catch (ArithmeticException e) {
-            resultado.setText("error");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Opción Invalida");
+            } catch (ArithmeticException e) {
+                resultado.setText("error");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Opción Invalida");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, response);
+            resultado.setText(":(");
         }
     }//GEN-LAST:event_btnCPActionPerformed
 
