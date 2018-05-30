@@ -60,11 +60,29 @@ public class Interfaz extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Calculadora Modular");
-        setBackground(new java.awt.Color(0, 51, 51));
+        setBackground(new java.awt.Color(102, 0, 204));
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         lblN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lblNActionPerformed(evt);
+            }
+        });
+        lblN.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                lblNKeyTyped(evt);
+            }
+        });
+
+        lblA.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                lblAKeyTyped(evt);
+            }
+        });
+
+        lblB.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                lblBKeyTyped(evt);
             }
         });
 
@@ -466,7 +484,7 @@ public class Interfaz extends javax.swing.JFrame {
                             raices = raices + "," + String.valueOf(resul.get(j));
                         }
                     }
-                    resultado.setText("Las raices de " + num1 + " son:{" + raices + "}");
+                    resultado.setText("Las raices de " + num1 + " son:{ " + raices + " }");
                 }
 
             } catch (ArithmeticException e) {
@@ -505,7 +523,7 @@ public class Interfaz extends javax.swing.JFrame {
                             raices = raices + "," + String.valueOf(resul.get(j));
                         }
                     }
-                    resultado.setText("Las raices de " + num1 + " son:{" + raices + "}");
+                    resultado.setText("Las raices de " + num1 + " son:{ " + raices + "} ");
                 }
 
             } catch (ArithmeticException e) {
@@ -628,6 +646,21 @@ public class Interfaz extends javax.swing.JFrame {
         lblA.setText("");
         lblB.setText("");
     }//GEN-LAST:event_btnLimpiarInputActionPerformed
+
+    private void lblNKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lblNKeyTyped
+        char car = evt.getKeyChar();
+        if((car<'0' || car>'9') && (car<',' || car>'.' )) evt.consume();
+    }//GEN-LAST:event_lblNKeyTyped
+
+    private void lblAKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lblAKeyTyped
+        char car = evt.getKeyChar();
+        if((car<'0' || car>'9') && (car<',' || car>'.' )) evt.consume();
+    }//GEN-LAST:event_lblAKeyTyped
+
+    private void lblBKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lblBKeyTyped
+        char car = evt.getKeyChar();
+        if((car<'0' || car>'9') && (car<',' || car>'.' )) evt.consume();
+    }//GEN-LAST:event_lblBKeyTyped
 
     /**
      * @param args the command line arguments
